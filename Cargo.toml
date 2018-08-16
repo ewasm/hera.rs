@@ -8,4 +8,4 @@ description = "Hera rewritten in Rust"
 
 [lib]
 name = "hera"
-crate-type = ["dylib"]
+crate-type = ["staticlib", "dylib"]
