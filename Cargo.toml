@@ -9,3 +9,6 @@ description = "Hera rewritten in Rust"
 [lib]
 name = "hera"
 crate-type = ["staticlib", "dylib"]
+
+[build-dependencies]
+bindgen = "0.39.0"
