@@ -26,7 +26,7 @@ pub struct evmc_instance {
     name: *const u8,
     version: *const u8,
     destroy: extern fn(c: *mut evmc_instance),
-    execute: extern fn(c: *mut evmc_instance, *mut libc::c_void, i32, *const libc::c_void, *const libc::c_void, u32) -> Box<evmc_result>,
+    execute: extern fn(c: *mut evmc_instance, *mut libc::c_void, i32, *const libc::c_void, *const libc::c_void, u32) -> evmc_result,
     set_tracer: extern fn(c: *mut evmc_instance),
     set_option: extern fn(c: *mut evmc_instance)
 }
@@ -36,10 +36,10 @@ extern fn evmc_destroy(instance: *mut evmc_instance) {
 //  panic!()
 }
 
-extern fn evmc_execute(instance: *mut evmc_instance, context: *mut libc::c_void, rev: i32, msg: *const libc::c_void, code: *const libc::c_void, code_size: u32) -> Box<evmc_result> {
+extern fn evmc_execute(instance: *mut evmc_instance, context: *mut libc::c_void, rev: i32, msg: *const libc::c_void, code: *const libc::c_void, code_size: u32) -> evmc_result {
   println!("execute called {:x?} {:x?}", instance, context);
   println!("sizeof evmc_result {}", std::mem::size_of::<evmc_result>());
-  let ret = Box::new(evmc_result{
+  let ret = evmc_result{
     status_code: -1,
     gas_left: 0,
     output_data: 0 as *const u8, //"empty\0".as_ptr() as *const u8,
@@ -49,7 +49,7 @@ extern fn evmc_execute(instance: *mut evmc_instance, context: *mut libc::c_void,
     release: 0 as *const u8,
     created_address: [0u8;20], //0 as *const u8, //evmc_address { bytes: [0u8;20] },
     padding: [0u8;4]
-  });
+  };
   println!("{:x?}", ret);
   ret
 }
@@ -71,14 +71,17 @@ impl evmc_instance {
 }
 
 #[no_mangle]
-pub extern fn evmc_create() -> Box<evmc_instance> {
+pub extern fn evmc_create() -> evmc_instance {
     println!("evmc_create called...");
 //    Box::new(evmc_instance{ abi_version: 3, name: CString::new("a").unwrap(), version: CString::new("b").unwrap()  })
-    Box::new(evmc_instance::new())
+    evmc_instance::new()
+//    let ptr = ::std::ptr::null_mut();
+//    evmc_instance::new(ptr);
+//    ::std::ptr::read(ptr)
 }
 
 #[no_mangle]
-pub extern fn evmc_create_hera() -> Box<evmc_instance> {
+pub extern fn evmc_create_hera() -> evmc_instance {
     evmc_create()
 }
 
