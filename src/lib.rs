@@ -10,9 +10,6 @@ pub struct evmc_instance {
     execute: extern fn(c: *mut evmc_instance),
     set_tracer: extern fn(c: *mut evmc_instance),
     set_option: extern fn(c: *mut evmc_instance)
-//    execute: *u8,
-//    set_tracer: *u8,
-//    set_option: *u8
 }
 
 extern fn evmc_destroy(instance: *mut evmc_instance) {
